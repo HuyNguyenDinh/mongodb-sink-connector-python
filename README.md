@@ -69,22 +69,21 @@ To configure the Kafka connection, you can set the following environment variabl
 
 ```
 IS_AUTHENTICATE_KAFKA=1
-KAFKA.BOOTSTRAP.SERVERS=localhost:9092
-KAFKA.SASL.USERNAME=your_kafka_username
-KAFKA.SASL.PASSWORD=your_kafka_password
-KAFKA.GROUP.ID=your_consumer_group_id
-KAFKA.TOPIC=your_kafka_topic
+KAFKA_BOOTSTRAP_SERVERS=localhost:9092
+KAFKA_SASL_USERNAME=your_kafka_username
+KAFKA_SASL_PASSWORD=your_kafka_password
+KAFKA_GROUP_ID=your_consumer_group_id
+KAFKA_TOPIC=your_kafka_topic
 ```
 
 - `IS_AUTHENTICATE_KAFKA`: Set to `1` to enable Kafka authentication, or `0` to disable it.
-- `KAFKA.BOOTSTRAP.SERVERS`: The Kafka bootstrap servers, specified as a comma-separated list of host:port pairs.
-- `KAFKA.SASL.USERNAME`: The username for SASL authentication with Kafka.
-- `KAFKA.SASL.PASSWORD`: The password for SASL authentication with Kafka.
-- `KAFKA.GROUP.ID`: The Kafka consumer group ID used for identifying the group of consumers.
-- `KAFKA.TOPIC`: The Kafka topic to which messages are published or from which messages are consumed.
+- `KAFKA_BOOTSTRAP_SERVERS`: The Kafka bootstrap servers, specified as a comma-separated list of host:port pairs.
+- `KAFKA_SASL_USERNAME`: The username for SASL authentication with Kafka.
+- `KAFKA_SASL_PASSWORD`: The password for SASL authentication with Kafka.
+- `KAFKA_GROUP_ID`: The Kafka consumer group ID used for identifying the group of consumers.
+- `KAFKA_TOPIC`: The Kafka topic to which messages are published or from which messages are consumed.
 
 ### Transform Configuation
-### Transform Configuration
 
 The application uses two lists for field processing: `JSON_FIELDS` and `DATETIME_FIELDS`.
 
@@ -119,5 +118,5 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ## Contact
 
-For any questions or inquiries, please contact [your email].
+For any questions or inquiries, please contact [huyn27316@gmail.com].
 

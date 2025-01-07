@@ -33,20 +33,21 @@ CDC_EVENT_TYPES = Counter('cdc_event_types_total', 'Number of CDC events process
 def consume_messages():
     config = {
         # User-specific properties that you must set
-        'bootstrap.servers': os.getenv("KAFKA.BOOTSTRAP.SERVERS"),
-        'group.id': os.getenv("KAFKA.GROUP.ID"),
+        'bootstrap.servers': os.getenv("KAFKA_BOOTSTRAP_SERVERS"),
+        'group.id': os.getenv("KAFKA_GROUP_ID"),
         'auto.offset.reset': 'earliest'
     }
     if IS_AUTHENTICATE_KAFKA:
         config.update({
-            'sasl.username': os.getenv("KAFKA.SASL.USERNAME"),
-            'sasl.password': os.getenv("KAFKA.SASL.PASSWORD"),
+            'sasl.username': os.getenv("KAFKA_SASL_USERNAME"),
+            'sasl.password': os.getenv("KAFKA_SASL_PASSWORD"),
             # Fixed properties
             'security.protocol': 'SASL_PLAINTEXT',
             'sasl.mechanisms': 'PLAIN'
         })
     consumer = Consumer(config)
-    consumer.subscribe([os.getenv("KAFKA.TOPIC")])
+    consumer.subscribe([os.getenv("KAFKA_TOPIC")])
+    logger.info("Starting consume {}".format(os.getenv("KAFKA_TOPIC")))
 
     try:
         while True:
@@ -89,14 +90,17 @@ def consume_messages():
                     event_type = "INSERT"
                     if not before and after:
                         collection.insert_one(after)
+                        logger.debug("1 record inserted")
                     # Update
                     elif before and after:
                         collection.find_one_and_replace({"id": before["id"]}, after)
                         event_type = "UPDATE"
+                        logger.debug("1 record updated")
                     # Delete - before and not after
                     else:
                         collection.delete_one({"id": before["id"]})
                         event_type = "DELETE"
+                        logger.debug("1 record deleted")
                     CDC_EVENT_TYPES.labels(event_type=event_type).inc()
                     processing_latency = time.time() - start_time
                     CDC_EVENT_LATENCY.observe(processing_latency)
@@ -104,6 +108,7 @@ def consume_messages():
                     lag = time.time() - event_time
                     CDC_CURRENT_LAG.set(lag)
                     CDC_EVENTS_PROCESSED.inc()
+                    logger.info("Processed 1 record")
 
     except KeyboardInterrupt:
         pass
@@ -115,7 +120,7 @@ def consume_messages():
 if __name__ == "__main__":
     # Start Prometheus metrics server
     start_http_server(8000)
-    print("Prometheus metrics server started on port 8000")
+    logger.info("Prometheus metrics server started on port 8000")
 
     # Start consuming messages
     consume_messages()
